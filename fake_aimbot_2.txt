@@ -1,0 +1,61 @@
+@name GARRY'S MOD SPIN/AIMBOT 2024 HACK (UNPATCHABLE) (OVERHAULED) (USED BY THE INFAMOUS HACKER RADIOJACKAL)
+@inputs 
+@outputs DT
+@persist SavedTime Prop:entity I
+@trigger 
+
+Time = systime()
+MS = round(Time,1)
+
+if(first()){
+    runOnTick(1)
+    runOnLast(1)
+    
+    holoCreate(1)
+    holoParent(1,entity())
+    holoModel(1,"models/beer/wiremod/gate_e2.mdl")
+    holoScale(1,vec(32))
+    holoPos(1,entity():toWorld(vec(0,0,0)))
+    
+    holoCreate(2)
+    holoParent(2,entity())
+    holoAlpha(2,0)
+    holoPos(2,entity():toWorld(vec(0,0,3000)))
+    
+    entity():setMaterial("models/effects/vol_light001")
+    entity():propMakePersistent(1)
+    
+    SavedTime = Time
+}
+
+while(perf(100)){
+    1+1
+}
+
+if(changed(MS)){
+    I = systime()*800
+    owner():setModelAngle(ang(0,I,0))
+    
+    local SegmentLength = 1
+    DT = Time - SavedTime
+    
+    local Anim = (DT <= SegmentLength)
+    if(Anim){
+        local Up = DT/SegmentLength
+        holoAlpha(1,255*Up)
+        holoPos(1,holoEntity(2):toWorld(vec(0,0,-3000*Up)))
+    }
+    
+    if(changed(Anim) & !Anim){
+        holoAlpha(1,255)
+        holoPos(1,entity():toWorld(vec(0,0,0)))  
+        holoEntity(1):soundPlay(1,0,"Canals.d1_canals_01a_wood_panel_impact_hard1")    
+        
+        entity():setModel("models/hunter/blocks/cube4x4x05.mdl")  
+        propSpawn("models/props_phx/ww2bomb.mdl",holoEntity(1):pos(),1):propBreak()
+    }
+}
+
+if(last()){
+    owner():setModelAngle(ang(0,0,0))
+}
