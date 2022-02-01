@@ -1,0 +1,64 @@
+@name BARREL FLINGA
+@inputs 
+@outputs 
+@persist [Barrel Aircraft]:entity Keys:table FireMode
+@trigger 
+@model models/hunter/misc/sphere1x1.mdl
+
+if(first()){
+    runOnTick(1)
+    
+    entity():setAlpha(0)
+
+    propSpawnASync(1)
+    propSpawnUndo(0)
+    propSpawnEffect(0)
+
+    holoCreate(1)
+    holoParent(1,entity())
+    holoModel(1,"models/props_phx/cannon.mdl")
+
+    Aircraft = noentity()
+    
+    timer("search",1)
+}
+
+Keys["FireInput",number] = owner():keyPressed("R")
+
+if(clk("search")){
+    findIncludeClass("lunasflightschool_*")
+    findExcludeClass("lunasflightschool_destruction")
+    findExcludeClass("lunasflightschool_spammer")
+    findInSphere(entity():pos(),50000)
+    Lfs = findToArray()
+        
+    for(I=1,Lfs:count()){
+        local CurrLfs = Lfs[I,entity]
+        if(CurrLfs:isValid()){
+            Aircraft = CurrLfs
+        }
+    }
+    timer("search",500)
+}
+
+if(tickClk()){
+    if(Aircraft:isValid()){
+        AimPos = Aircraft:pos()
+    }else{
+        AimPos = owner():eyeTrace():position()
+    }
+
+    local TX = -elevation(entity():pos(),ang(0,0,0),AimPos)
+    local TY = -bearing(entity():pos(),ang(0,0,0),AimPos)
+
+    entity():setAng(ang(TX,TY,0))
+
+    if(Keys["FireInput",number]){
+        Barrel = propSpawn("models/props_c17/oildrum001_explosive.mdl",entity():toWorld(vec(12,0,60)),entity():toWorld(ang(90,0,0)),0)
+        Barrel:resetPhysics()
+        Barrel:propFreeze(0)
+        Barrel:propDrag(0)
+        Barrel:propGravity(0)
+        Barrel:applyForce(entity():forward() * Barrel:mass() * 3500)
+    }
+}
