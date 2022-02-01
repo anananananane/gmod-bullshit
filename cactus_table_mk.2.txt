@@ -1,0 +1,37 @@
+@name cactus table mk.2
+@inputs 
+@outputs 
+@persist [Cactus Table]:entity [PlayTime SongLength]:number
+@outputs DT
+Time = systime()
+
+if(first()){
+    propSpawnUndo(0)
+    propSpawnEffect(0)
+    propSpawnASync(1)
+    
+    runOnTick(1)
+    
+    SongLength = 2*60 + 28
+    
+    function number isThisCurrentlyValid(This:entity) {
+        return This:isValid() ? 1 : 0 
+    }
+}
+
+if(!isThisCurrentlyValid(Table)){
+    Table = propSpawn("models/props_c17/FurnitureTable001a.mdl",entity():toWorld(vec(0,0,19)),ang(0,0,0),1)
+    Table:parentTo(entity())
+}
+
+if(!isThisCurrentlyValid(Cactus)){
+    Cactus = propSpawn("models/props_lab/cactus.mdl",entity():toWorld(vec(0,0,42)),ang(0,0,0),1)
+    Cactus:parentTo(entity())
+} 
+
+DT = Time - PlayTime
+
+if(DT >= SongLength){
+    PlayTime = Time
+    entity():streamStart(1,"https://dl.dropboxusercontent.com/s/siiqr0cp3x8xbm9/SEPARATION%20ANXIETY.mp3?dl=1")
+}
