@@ -1,0 +1,21 @@
+@name TextToSpeech
+
+if(first()){
+    runOnTick(1)
+    runOnChat(1)
+}
+
+if(chatClk(owner())){
+    local LS = owner():lastSaid()
+    if(LS:sub(1,5) == "!tts "){
+        hideChat(1)
+        
+        #ifdef entity:streamStart(number,string)        
+            local Lang = "ja" 
+            local IE = "utf-8"
+            owner():streamStart(1,"http://translate.google.com/translate_tts?ie="+IE+"&q="+LS:sub(6)+"&tl="+Lang+"&client=tw-ob")
+        #else
+            hint("no streamcore on this server",5)
+        #endif
+    }
+}
