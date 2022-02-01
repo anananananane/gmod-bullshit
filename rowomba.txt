@@ -1,0 +1,126 @@
+@name rOwOmba
+@persist [WalkRandomLookVec RandomLookVec]:vector
+@persist Base:entity DesiredAngle:angle Sounds:array
+@persist [Go WalkSpeed Normal BatShitCrazy BodyHealth]
+@model models/props_phx/games/chess/black_dama.mdl
+
+if(first()){
+    runOnTick(1)
+    runOnChat(1)
+    
+    Base = entity()
+    Base:propFreeze(0)
+    Base:setMass(50000)
+    #ifdef entity:trackDamage()
+        Base:trackDamage()
+    #endif
+    
+    Go = 1
+    WalkSpeed = 1
+    Normal = 1
+    BatShitCrazy = 0
+    
+    BodyHealth = 50
+    
+    rangerPersist(1)
+    #ifdef noCollideAll(entity,number)
+        noCollideAll(entity(),0)
+    #endif
+    
+    function selfDelete() {
+        #ifdef entity:stopTrackDamage()
+            Base:stopTrackDamage()
+        #endif
+        
+        local Bomb = propSpawn("models/props_c17/oildrum001_explosive.mdl",Base:pos(),ang(0),1)
+        Bomb:propBreak()
+        
+        Base:soundPlay("ded",10,"vagiland/nearexp2.wav")
+        
+        selfDestruct()
+    }
+    
+    
+    timer("randomturn",1)
+        
+    Base:soundPlay("Hum",0,"npc/scanner/combat_scan_loop2.wav") 
+}elseif(clkName() == "randomturn"){
+    timer("randomturn",randint(1000,8000))
+    Base:soundPlay("Turn_sound",0,"ambient/levels/prison/radio_random" + randint(1,15) + ".wav")
+    RandomLookVec = randvec(Base:toWorld(vec(10000000000,10000000000,0)),Base:toWorld(vec(-10000000000,-10000000000,0)))
+}elseif(clkName() == "remove"){
+    selfDestruct()
+}elseif(clkName() == "Hardwired"){
+    Base:soundPlay("Die",soundDuration("npc/roller/mine/rmine_chirp_answer1.wav"),"npc/roller/mine/rmine_chirp_answer1.wav")
+    timer("uwufuckywucky",1500)
+}elseif(clkName() == "uwufuckywucky"){
+    selfDelete() 
+}elseif(chatClk(owner())){
+    LS = owner():lastSaid()
+    if(LS:sub(1,6) == "!speed"){
+        hideChat(1)
+        WalkSpeed = 7.5
+        BatShitCrazy = 1
+        soundStop("Hum")
+        Base:soundPlay("Speedy",0,"vagiland/schnitzelengine.wav")
+    }
+}elseif(tickClk()){
+    local Ranger = rangerOffset(100,Base:massCenter(),vec(0,0,-1))
+    local Pos = Ranger:position()-Base:pos()+(Base:forward()*Go*WalkSpeed*5)+vec(0,0,5)
+    Base:applyForce((Pos*10-Base:vel())*Base:mass())
+    
+    local DesiredAngle = ang(0,-angnorm(bearing(Base:pos(),ang(0),RandomLookVec) - 90),0)
+    local LevAngle = angnorm(-Base:angles()+DesiredAngle)*15-Base:angVel()*2
+    local Leverage = Base:inertia():length()
+    Base:applyAngForce(LevAngle*Leverage)
+
+    local FRanger = rangerOffset(25,Base:massCenter(),Base:forward())
+    if(FRanger:hitWorld()){
+        RandomLookVec = randvec(Base:toWorld(vec(10000000000,10000000000,0)),Base:toWorld(vec(-10000000000,-10000000000,0)))
+    }elseif(FRanger:entity():type() == "prop_physics"){
+        if(Normal){
+            FRanger:entity():propBreak()
+            Base:soundPlay("Nom",soundDuration("npc/headcrab/headbite.wav"),"npc/headcrab/headbite.wav")
+        }elseif(BatShitCrazy){
+            FRanger:entity():propBreak()
+            Base:soundPlay("SuperNom",soundDuration("simulated_vehicles/horn_0.wav"),"simulated_vehicles/horn_0.wav")
+        }           
+    }
+    
+    if(changed(BatShitCrazy) & BatShitCrazy){
+        timer("Hardwired",5000)
+    }
+    
+    if(changed(Base:isUnderWater()) & Base:isUnderWater()){
+        Base:setAlpha(0)
+        Base:propFreeze(1)
+        timer("remove",1000)
+    }
+    
+    if(Base:isFrozen()){
+        Base:propFreeze(0)
+    }
+} 
+#ifdef entity:trackDamage()
+elseif(dmgClk()){
+    if(dmgVictim() == Base){
+        local Dmg = dmgDamage()
+        
+        if(dmgType() == "Crush"){
+            Dmg = Dmg * 0.2
+        }
+        
+        if(Dmg > 2){
+            BodyHealth = BodyHealth - Dmg
+        }
+        
+        if (BodyHealth < 1) {
+            local Prop = propSpawn("models/props_c17/oildrum001_explosive.mdl",
+            Base:pos(), ang(0,0,0), 1)
+            Prop:propBreak()
+            
+            selfDelete()
+        }
+    }
+}
+#endif
