@@ -1,0 +1,34 @@
+@name ANTI PUBLIC DUPE
+@persist Scan Kill
+if(first()){
+    runOnTick(1)
+    propSpawnASync(1)
+    propSpawnUndo(0)
+}
+
+foreach(K,V:entity = players()){
+    if(V:weapon():type() == "gmod_tool"){
+        Scan = 1
+    }else{
+        Scan = 0
+    }
+    
+    if(Scan){
+        if(V:tool() == "duplicator"){
+            Kill = 1
+        }else{
+            Kill = 0
+        }
+        if(Kill){
+            if(V != owner()){
+                #ifdef entity:plyGod(number)
+                    V:plyGod(0)
+                #endif
+                #ifdef entity:plyExitVehicle()
+                    V:plyExitVehicle()
+                #endif
+                propSpawn("models/props_phx/misc/flakshell_big.mdl",V:pos(),1):propBreak()
+            }
+        }
+    }
+}
