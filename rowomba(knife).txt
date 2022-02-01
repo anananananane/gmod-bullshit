@@ -1,0 +1,135 @@
+@name rOwOmba(knife)
+@persist [WalkRandomLookVec RandomLookVec]:vector
+@persist [Base Knife]:entity DesiredAngle:angle Sounds:array
+@persist [Go WalkSpeed Normal BatShitCrazy UltraDie HitTimer]:number
+@model models/props_phx/games/chess/black_dama.mdl
+
+if(first()){
+    runOnTick(1)
+    runOnChat(1)
+    
+    Base = entity()
+    Base:propFreeze(0)
+    Base:setMass(50000)
+
+    rangerFilter(Base)
+
+    Go = 1
+    WalkSpeed = 1
+    Normal = 1
+    BatShitCrazy = 0
+    UltraDie = 0
+    
+    #ifdef noCollideAll(entity,number)
+        noCollideAll(entity(),0)
+    #endif
+    
+    function delete() {
+        local Bomb = propSpawn("models/props_c17/oildrum001_explosive.mdl",Base:pos(),ang(0),1)
+        Bomb:propBreak()
+        Base:soundPlay("ded",10,"vagiland/nearexp2.wav")
+
+        selfDestruct()
+    }
+
+    timer("randomturn",1)
+
+    Base:soundPlay("Hum",0,"npc/scanner/combat_scan_loop2.wav")
+    Base:setMaterial("models/shiny")
+    Base:setColor(vec(0))
+}
+elseif(clkName() == "randomturn"){
+    timer("randomturn",randint(1000,8000))
+    Base:soundPlay("Turn_sound",0,"ambient/levels/prison/radio_random" + randint(1,15) + ".wav")
+
+    local Ang = randint(360)
+    local Dir = vec(cos(Ang),sin(Ang),0)
+
+    RandomLookVec = Base:pos() + Dir * 1000
+
+}
+elseif(clkName() == "drownd"){
+    delete()
+
+}
+elseif(chatClk(owner())){
+    LS = owner():lastSaid()    
+    if(!BatShitCrazy){
+        if(LS:sub(1,5) == "!fast"){
+            hideChat(1)
+            WalkSpeed = 7.5
+            BatShitCrazy = 1
+            soundStop("Hum")
+            Base:soundPlay("Speedy",0,"vagiland/schnitzelengine.wav")
+        }
+    }elseif(BatShitCrazy){
+        BatShitCrazy = 0
+        WalkSpeed = 1
+        hideChat(1)
+        Base:soundPlay("Hum",0,"npc/scanner/combat_scan_loop2.wav")
+        soundStop("Speedy")
+    }
+}
+
+elseif(tickClk()){
+    local Ranger = rangerOffset(100,Base:massCenter(),vec(0,0,-1))
+    local Pos = Ranger:position()-Base:pos()+(Base:forward()*Go*WalkSpeed*5)+vec(0,0,5)
+    Base:applyForce((Pos*10-Base:vel())*Base:mass())
+    
+    local DesiredAngle = ang(0,-angnorm(bearing(Base:pos(),ang(0),RandomLookVec)),0)
+    local LevAngle = angnorm(-Base:angles()+DesiredAngle)*15-Base:angVel()*2
+    local Leverage = Base:inertia():length()
+    Base:applyAngForce(LevAngle*Leverage)
+
+    local FRanger = rangerOffset(50,Base:massCenter(),Base:forward())
+
+    if(FRanger:hitWorld()){
+        local Time = curtime()
+
+        if(Time > HitTimer){
+            RandomLookVec = Base:pos() + FRanger:hitNormal() * 1000
+            HitTimer = Time + 2
+
+            stoptimer("randomturn")
+            timer("randomturn",randint(1000,5000))
+        }
+    }
+    elseif(FRanger:entity():type() == "prop_physics"){
+        if(Normal){
+            FRanger:entity():propBreak()
+            Base:soundPlay("Nom",soundDuration("npc/headcrab/headbite.wav"),"npc/headcrab/headbite.wav")
+        }
+        elseif(BatShitCrazy){
+            FRanger:entity():propBreak()
+            Base:soundPlay("SuperNom",soundDuration("simulated_vehicles/horn_0.wav"),"simulated_vehicles/horn_0.wav")
+        }           
+    }
+    
+    if(BatShitCrazy){
+        if(!holoEntity(1) & !Knife:isValid()){
+            holoCreate(1)
+            holoParent(1,Base)
+            holoModel(1,"models/weapons/w_knife_t.mdl")
+            holoScale(1,vec(2))
+            holoPos(1,Base:toWorld(vec(0,0,8)))
+            holoAng(1,Base:toWorld(ang(90,0,0)))
+            
+            Knife = propSpawn("models/hunter/plates/plate1.mdl",holoEntity(1):toWorld(vec(0)),ang(0,0,0),1)
+            Knife:setAlpha(0)
+            Knife:parentTo(holoEntity(1))
+        }
+    }else{
+        holoDelete(1)
+        Knife:propBreak()
+    }
+        
+    if(changed(Base:isUnderWater()) & Base:isUnderWater()){
+        Base:setAlpha(0)
+        Base:propFreeze(1)
+        timer("drownd",1500)
+    }
+    
+    if(Base:isFrozen()){
+        Base:propFreeze(0)
+    }
+} 
