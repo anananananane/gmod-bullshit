@@ -20,7 +20,7 @@ if(first()){
     Normal = 1
     BatShitCrazy = 0
     
-    BodyHealth = 50
+    BodyHealth = 150
     
     rangerPersist(1)
     #ifdef noCollideAll(entity,number)
@@ -39,7 +39,6 @@ if(first()){
         
         selfDestruct()
     }
-    
     
     timer("randomturn",1)
         
@@ -87,8 +86,8 @@ if(first()){
         }           
     }
     
-    if(changed(BatShitCrazy) & BatShitCrazy){
-        timer("Hardwired",5000)
+    if(changed(BatShitCrazy) & BatShitCrazy == 1){
+        timer("Hardwired",20000)
     }
     
     if(changed(Base:isUnderWater()) & Base:isUnderWater()){
@@ -101,26 +100,3 @@ if(first()){
         Base:propFreeze(0)
     }
 } 
-#ifdef entity:trackDamage()
-elseif(dmgClk()){
-    if(dmgVictim() == Base){
-        local Dmg = dmgDamage()
-        
-        if(dmgType() == "Crush"){
-            Dmg = Dmg * 0.2
-        }
-        
-        if(Dmg > 2){
-            BodyHealth = BodyHealth - Dmg
-        }
-        
-        if (BodyHealth < 1) {
-            local Prop = propSpawn("models/props_c17/oildrum001_explosive.mdl",
-            Base:pos(), ang(0,0,0), 1)
-            Prop:propBreak()
-            
-            selfDelete()
-        }
-    }
-}
-#endif
