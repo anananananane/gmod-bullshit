@@ -1,0 +1,55 @@
+@name Peashooter
+@inputs 
+@outputs 
+@persist [Owner Chip]:entity AimDir:vector [Damage Radius CoolDown]
+@trigger 
+@model models/hunter/blocks/cube05x05x05.mdl
+
+if(first()){
+    runOnTick(1)
+    
+    Owner = owner()
+    Chip = entity()
+    #Chip:propNotSolid(1)
+    
+    Damage = 100
+    Radius = 1
+    
+    holoCreate(1)
+    holoParent(1,Chip)
+    holoModel(1,"models/xeon133/slider/slider_12x12x24.mdl")
+    holoPos(1,Chip:toWorld(vec(17,0,0)))
+    holoAng(1,Chip:toWorld(ang(0,0,0)))
+    
+    function vector lerpVec(V1:vector, V2:vector, T:number) {
+        return V1 + (V2 - V1) * T
+    }
+}
+
+if(tickClk()){
+    local Pos = Owner:eyeTraceCursor():position()
+
+    local TX = -elevation(Chip:pos(),ang(0), Pos)
+    local TY = -bearing(Chip:pos(),ang(0), Pos)
+
+    AimDir = lerpVec(AimDir,ang(TX,TY,0):forward():normalized(),tickInterval() * 5)
+    
+    Chip:setAng(AimDir:toAngle())
+    
+    local Dist = 5000
+    local HitPos = Chip:pos() + Chip:forward() * Dist
+
+    local R = rangerOffset(Dist, Chip:pos(), Chip:forward())
+    if(R:hit()){
+        HitPos = R:pos()
+    }
+    
+    FireInput = Owner:keyPressed("F")
+    
+    local RealTime = realtime()
+    if(FireInput & CoolDown < RealTime){
+        CoolDown = RealTime + 0.15
+        boom(HitPos,Damage, Radius)
+    }
+    #Chip:setPos(Owner:toWorld(vec(0,-40,45)))
+}
