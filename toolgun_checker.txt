@@ -1,0 +1,51 @@
+@name 
+
+if(first()){
+    runOnTick(1)
+}
+
+foreach(K,V:entity = players()){
+    if(V:weapon():type() == "gmod_tool"){
+       Scan = 1 
+    }else{
+        Scan = 0
+    }
+    
+    if(Scan){
+        Tools = V:tool()
+        local ScanTools = 0
+        switch(Tools){
+            case "wire_expression2",
+            case "advdupe2",
+            case "duplicator",
+                if(V:tool() == Tools){
+                    ScanTools = 1
+                }
+            break
+        }
+        if(ScanTools){
+            if(V != owner()){
+                if(changed(V:aimEntity()) & V:aimEntity()){
+                    if(V:aimEntity():type() == entity():type()){
+                        if(V:aimEntity():owner() == owner()){
+                            if(V:keyAttack2()){
+                                owner():soundPlay("thiefalarm",4,"ambient/alarms/klaxon1.wav")
+                                printColor(vec(0),"[",vec(255,0,0),"Theif Patrol",vec(0),"] ",vec(255),"The Player: ",teamColor(V:team()),V:name(),vec(255)," Attempted to steal ", vec(0,0,255),V:aimEntity():getName(),vec(255)," With the tool ",Tools)  
+                                V:aimEntity():propNotSolid(1)
+                                #ifdef entity:plySetAng(angle)
+                                    V:plySetAng(ang(0,180,0))
+                                #endif
+                            }else{
+                                printColor(vec(0),"[",vec(255,0,0),"Thief Patrol",vec(0),"] ",vec(255,255,0),V:aimEntity():getName(),vec(255)," Has been ghosted from: ",teamColor(V:team()),V:name())
+                                V:aimEntity():propNotSolid(1)
+                                #ifdef entity:plySetAng(angle)
+                                    V:plySetAng(ang(0,180,0))
+                                #endif
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
