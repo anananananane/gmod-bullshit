@@ -1,0 +1,72 @@
+@name obnoxious sound effects
+@persist User:entity Aim:angle MouseMove
+if(first()){
+    User = owner()
+    print(User:name())
+    runOnKeys(User,1)
+}
+
+E = User:keyUse()
+if(changed(E) & E){
+    User:soundPlay(1,2,"buttons/button3.wav")
+}
+
+Space = User:keyPressed("space")
+if(changed(Space) & Space){
+    User:soundPlay(2,2,"buttons/button18.wav")
+} 
+   
+WASD = User:keyPressed("W") | User:keyPressed("A") | User:keyPressed("S") | User:keyPressed("D")
+if(changed(WASD) & WASD){
+    User:soundPlay(3,2,"buttons/combine_button1.wav")
+} 
+ 
+R = User:keyReload()
+if(changed(R) & R){
+    Sound = array(
+    "buttons/button2.wav",
+    "buttons/button8.wav",
+    "buttons/button10.wav",
+    "buttons/button11.wav"
+    )
+    User:soundPlay(4,2,Sound[randint(1,Sound:count()),string])
+} 
+
+Q = User:keyPressed("Q")
+if(changed(Q) & (Q|!Q)){
+    User:soundPlay(5,2,"buttons/combine_button7.wav")
+} 
+    
+M1 = User:keyPressed("mouse_left")
+if(changed(M1) & M1){
+    User:soundPlay(6,2,"buttons/button24.wav")
+} 
+
+M2 = User:keyPressed("mouse_right")
+if(changed(M2) & M2){
+    User:soundPlay(7,2,"buttons/button1.wav")
+} 
+
+Ctrl = User:keyPressed("LCONTROL")
+if(changed(Ctrl)){
+    if(Ctrl){
+        User:soundPlay(8,2,"buttons/button19.wav")
+    }else{
+        User:soundPlay(9,2,"buttons/button5.wav")
+    }    
+} 
+    
+Shift = User:keyPressed("lshift")
+if(changed(Shift)){
+    if(Shift){
+        User:soundPlay(10,0,"vehicles/apc/apc_firstgear_loop1.wav")
+        User:soundPlay(11,2,"buttons/button4.wav")
+        User:soundPlay(12,0,"ambient/machines/turbine_loop_2.wav")
+    }else{
+        soundStop(10)
+        soundStop(12)        
+        User:soundPlay(13,2,"buttons/lever5.wav")
+        User:soundPlay(14,1,"vehicles/apc/apc_slowdown_fast_loop5.wav")
+    }
+} 
+

@@ -1,0 +1,41 @@
+@name NO SNIPER 2
+
+if(first()){
+    runOnTick(1)
+    propSpawnASync(1)
+}
+
+Players = players()
+
+for(I=1,Players:count()){
+    local CurrPlayer = Players[I,entity]
+    Weapon = CurrPlayer:weapon():type()
+    
+    local Kill = 0
+    
+    switch(Weapon){
+        case "test_awp", #kill if holding
+        case "test_deagle",
+        case "plasmid_incinerate",
+        case "wowozela",
+            Kill = 1
+        break
+        
+        case "weapon_ar2",        
+        case "weapon_smg1", #only kill if rightclicking
+            if(CurrPlayer:keyAttack2()){
+                Kill = 1
+            }
+        break
+        
+        default,
+            if(Weapon:sub(1,5) == "arccw"){
+                Kill = 1
+            }
+        break
+    }
+    
+    if(Kill & CurrPlayer:isAlive() & !CurrPlayer:inGodMode()){
+        propSpawn("models/props_phx/ww2bomb.mdl",CurrPlayer:pos(),1):propBreak()
+    }
+}

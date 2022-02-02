@@ -1,0 +1,31 @@
+@name suspiciously powerful gravgun
+@persist Holding
+
+if(first()){
+    runOnTick(1)
+}
+
+
+PC = (owner():weapon():type() == "weapon_physgun")
+
+
+if(PC){
+    local M1 = owner():keyAttack1()
+
+    if(changed(M1)){
+        if(owner():aimEntity():isValid()){
+            if(M1){
+                owner():soundPlay("pickup",3,"Weapon_PhysCannon.Pickup")
+                owner():soundPlay("holding",0,"Weapon_PhysCannon.HoldSound")
+            }elseif(!M1){
+                owner():soundPlay("punt",3,"Weapon_PhysCannon.Launch")
+            }
+        }elseif(!M1){
+            owner():soundPlay("fail",3,"Weapon_PhysCannon.DryFire")
+        }
+        
+        if(!M1){
+            soundStop("holding")
+        }
+    }
+}
