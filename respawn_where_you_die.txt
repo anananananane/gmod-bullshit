@@ -1,0 +1,22 @@
+@name respawn where you die
+@persist Owner:entity Pos:vector
+
+if(first()){
+    runOnTick(1)
+    runOnDeath(1)
+    
+    Owner = owner()
+    Pos = Owner:pos()
+}
+    
+if(changed(Owner:isAlive())){
+    if(!Owner:isAlive()){
+        Pos = owner():pos()
+    }else{
+        #ifdef entity:plySetPos(vector)
+            Owner:plySetPos(Pos)
+        #else
+            Owner:teleport(Pos)
+        #endif
+    }
+}
