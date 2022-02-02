@@ -1,0 +1,16 @@
+
+if(first()){
+    runOnTick(1)
+    Seat = seatSpawn("models/nova/airboat_seat.mdl",entity():toWorld(vec(0,0,5)),ang(0,0,0),1)
+    Seat:parentTo(entity())
+}
+
+B = owner():keyPressed("n")
+DesiredPos = entity():pos() + owner():eye()*B*10 + vec(0,0,1)
+
+Force = DesiredPos-entity():pos()
+entity():applyForce((Force*10-entity():vel())*entity():mass())
+
+LevAngle = angnorm(-entity():angles()+ang(0,0,0))*15-entity():angVel()*2
+Leverage = entity():inertia():length()
+entity():applyAngForce(LevAngle*Leverage)
