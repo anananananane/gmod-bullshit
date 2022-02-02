@@ -1,0 +1,6 @@
+@name (none)
+
+if(first()){
+    entity():setColor(vec(255,0,0))
+    hint("pranked",5)
+}
