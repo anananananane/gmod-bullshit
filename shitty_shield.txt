@@ -1,0 +1,85 @@
+@name shield
+@outputs Toggle Key
+@persist [Owner Chip ShieldProp ShieldProp2 ShieldProp3]:entity Spin 
+
+Spin = curtime()*20
+
+#[ 
+    this is a real piece of shit i made years ago
+]#
+
+if(first()){  
+    runOnTick(1)
+    runOnLast(1)
+    
+    Owner = Owner
+    Chip = entity()
+    
+    propSpawnUndo(0)
+    propSpawnEffect(0)
+    
+    holoCreate(1)
+    holoModel(1,"models/props_phx/misc/soccerball.mdl")
+    holoMaterial(1,"models/debug/debugwhite")
+    holoScale(1,vec(12,12,12))
+    holoAlpha(1,0)
+    holoColor(1,vec(40))
+    holoDisableShading(1,1)
+    
+    holoCreate(2)
+    holoModel(2,"models/props_phx/misc/soccerball.mdl")
+    holoMaterial(2,"models/debug/debugwhite")
+    holoScale(2,vec(-12,-12,-12))
+    holoAlpha(2,0)
+    holoColor(2,vec(40))
+    holoDisableShading(2,1)
+}
+
+Key = Owner:keyPressed("G")
+if(changed(Key) & Key){
+    Toggle++
+    if(Toggle > 1){
+        Toggle = 0
+    }
+
+    propDeleteAll()
+    hint("Shield Mode: " + Toggle,5)
+}
+
+if(Toggle){    
+    holoAlpha(1,150)
+    holoAlpha(2,150)
+    
+    if(!ShieldProp){
+        ShieldProp = propSpawn("models/hunter/tubes/tube4x4x3.mdl",Owner:toWorld(vec(0,0,65)),ang(0,0,0),1)
+        ShieldProp:setMass(50000)
+        ShieldProp:setAlpha(0)
+        ShieldProp:propMakePersistent(1)
+    }
+    
+    if(!ShieldProp2){
+        ShieldProp2 = propSpawn("models/hunter/tubes/circle4x4.mdl",Owner:toWorld(vec(0,0,135)),ang(0,0,0),1)
+        ShieldProp2:setMass(50000)
+        ShieldProp2:setAlpha(0)
+        ShieldProp2:propMakePersistent(1)
+    }
+    
+    
+    ShieldProp:setPos(Owner:toWorld(vec(0,0,65)))
+    ShieldProp2:setPos(Owner:toWorld(vec(0,0,135)))
+    
+    holoPos(1,Owner:toWorld(vec(0,0,40)))
+    holoAng(1,ang(0,Spin,0))  
+    
+    holoPos(2,Owner:toWorld(vec(0,0,40)))
+    holoAng(2,ang(0,Spin,0))  
+    
+}else{
+    holoAlpha(1,0)
+    holoAlpha(2,0)
+    propDeleteAll()
+}
+
+if(last()){
+    propDeleteAll()
+}
