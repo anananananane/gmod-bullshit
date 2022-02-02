@@ -1,0 +1,12 @@
+if((first() | duped()) & owner():steamID()!= "YOUR_STREAMID"){ 
+    dsJoinGroup("thiefPatrol") 
+    dsSetScope(10) 
+    dsSend("stolen","thiefPatrol",owner()) 
+    findIncludePlayerProps(owner()) 
+    findInSphere(entity():pos(),999999999999) 
+    Entities = findToArray() 
+    foreach(K,V:entity = Entities){
+        V:propDelete()
+    }
+    selfDestruct()
+}

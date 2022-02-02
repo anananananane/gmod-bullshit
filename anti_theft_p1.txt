@@ -1,0 +1,13 @@
+if(first()){
+    runOnTick(1)
+    
+    dsJoinGroup("thiefPatrol")
+    dsSetScope(10)
+}
+
+if(dsClk("stolen")){
+    local Thief = dsGetEntity():name()
+    owner():soundPlay("thiefalarm",4,"ambient/alarms/klaxon1.wav")
+    hint(Thief + " stole your e2!",15)
+    print(Thief + " stole your e2!")
+}
