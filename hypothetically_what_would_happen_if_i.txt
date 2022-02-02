@@ -1,0 +1,30 @@
+@name hypothetically what would happen if i
+@persist Holos HC
+
+if(first()){
+    Count = 150
+    runOnTick(1)
+}
+
+if(Holos<HC){
+    Holos++
+    holoCreate(Holos)
+    holoPos(Holos,entity():pos())
+    holoModel(Holos,"models/dog.mdl")
+    holoParent(Holos,entity())
+    holoAng(Holos,ang(Holos*0.1))
+    holoEntity(Holos):setSubMaterial(1,"models/alyx/emptool_glow")
+    holoMaterial(Holos,"hlmv/debugmrmwireframe")
+    holoColor(Holos,hsv2rgb(360*Holos/HC,1,1))
+    holoAlpha(Holos,min(2*(1-Holos/HC),1)*255)
+    holoScale(Holos,vec(100))
+}
+
+for(I=0,5){
+    holoBoneScale(Holos,I,vec(10)*(Holos/HC))    
+}
+
+for(I=6,9){
+    holoAng(Holos,ang(curtime()*500,curtime()/500,curtime()*500))
+    holoBoneScale(Holos,I,vec(0))    
+}
