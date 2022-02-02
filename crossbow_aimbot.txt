@@ -1,0 +1,61 @@
+@name crossbow aimbot
+@persist Target:entity
+
+if(first()) {
+    findIncludeEntities(players())
+    runOnTick(1)
+    
+    Target = entity()
+    
+    holoCreate(1) 
+    holoModel(1,"hq_icosphere") 
+    holoColor(1,vec(35,145,60))
+    holoScale(1,vec(1))
+    holoVisible(1,players(),0)
+    holoVisible(1,owner(),1)
+    holoDisableShading(1,1)
+    
+    holoCreate(2) 
+    holoModel(2,"hq_icosphere") 
+    holoColor(2,vec(35,145,60))
+    holoScale(2,vec(1))
+    holoVisible(2,players(),0)
+    holoVisible(2,owner(),1)
+    holoDisableShading(2,1)
+}
+
+if(owner():aimEntity() & owner():aimEntity():type() == "player" & owner():aimEntity() != Target){
+    Target = owner():aimEntity()
+    print("Target updated: " + Target:name())
+}
+
+Reset = owner():keyPressed("B")
+if(changed(Reset) & Reset){
+    reset()
+}
+
+if(tickClk()){
+    local VX = Target:vel():x()
+    local VY = Target:vel():y()
+    local VZ = Target:vel():z()
+    
+    local A = Target:pos():x()-owner():pos():x()
+    local B = Target:pos():y()-owner():pos():y()
+    local C = Target:pos():z()-owner():pos():z()
+    
+    local V = 3000
+    
+    local T = ((-1/2)*sqrt((2*A*VX + 2*B*VY + 2*C*VZ)^2 - 4*(A^2 + B^2 + C^2)*(VX^2 + VY^2 + VZ^2 - V^2)) - A*VX - B*VY - C*VZ)/(VX^2 + VY^2 + VZ^2 - V^2)
+    holoPos(1,vec(Target:pos():x() + VX*T,Target:pos():y() + VY*T,Target:pos():z() + VZ*T + 60))
+    
+    #ifdef entity:plySetAng(angle)
+        if(Target:isValid()){
+            holoPos(2,Target:attachmentPos("chest"))
+        
+            if(Target:isAlive() && owner():weapon():type() == "weapon_crossbow"){
+                local TY = -bearing(owner():pos(),ang(0),holoEntity(1):pos())
+                owner():plySetAng(ang(0,TY,0))
+            }
+        }
+    #endif
+}
