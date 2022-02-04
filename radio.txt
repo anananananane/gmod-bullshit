@@ -1,0 +1,60 @@
+@name radio
+@persist [Owner Radio]:entity ODistance Move
+@model models/props_lab/citizenradio.mdl 
+
+#[
+    how to use:
+    type "!play <mp3 link> and itll play it
+    for example: "!play https://www.dropbox.com/s/3flu7g7lu4t05ze/Phantom%20Lord.mp3?dl=0"
+    youtube links dont work, but dropbox pastebin custom web serveres etc all work
+]#
+
+if(first()){
+    runOnTick(1)
+    runOnChat(1)
+    
+    streamDisable3D(1)
+    
+    Owner = owner()
+    Radio = entity()
+    Radio:setMass(50000)
+}
+
+if(chatClk(Owner)){
+    local LS = Owner:lastSaid()
+    if(LS:sub(1,6) == "!play "){
+        hideChat(1)
+        local RadioURL = LS:sub(7):replace("www.dropbox.com","dl.dropboxusercontent.com"):replace("?dl=0","?dl=1")
+        Radio:streamStart(1,RadioURL)
+    }
+}
+elseif(tickClk()){
+    local ODistance = Radio:pos():distance(Owner:pos())
+    if(ODistance > (100 + 100) & !Owner:inNoclip() & !Owner:inVehicle()){ 
+        Move = 1
+    }else{
+        Move = 0
+    }
+
+    local Turn = -angnorm(bearing(Radio:pos(),ang(0,0,0),Owner:pos()) - 90)
+    if(Move){
+        local LevAngle = angnorm(-Radio:angles()+ang(0,Turn-90,0))*15-Radio:angVel()*2
+        Radio:applyAngForce(LevAngle*Radio:inertia():length())
+        
+        rangerFilter(Radio)
+        local R = rangerOffset(100,Radio:massCenter(),vec(0,0,-1))
+        local Pos = R:position()-Radio:pos()+(Radio:forward()*30)+vec(0,0,30)
+        Radio:applyForce((Pos*10-Radio:vel())*Radio:mass())
+        
+        if(ODistance > 500){
+            Radio:setPos(Owner:pos()+randvec(vec(50,50,20),vec(-50,-50,20)))
+        }
+    }else{
+        local LevAngle = angnorm(-Radio:angles())*15-Radio:angVel()*2
+        Radio:applyAngForce(LevAngle*Radio:inertia():length()*ang(1,0,1))
+    }
+    
+    if(entity():isFrozen()){
+        entity():propFreeze(0)
+    }
+}
