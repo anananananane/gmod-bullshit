@@ -1,0 +1,39 @@
+@name 
+@inputs 
+@outputs 
+@persist Holos:array T C
+@trigger 
+
+if(first()){
+    function void hlx(Index:number, Parent:entity, Model:string, Material:string, Scale:vector, Color:vector, Pos:vector, Ang:angle, Shading:number, Add:number){
+        holoCreate(Index)
+        holoParent(Index,Parent)
+        holoModel(Index,Model)
+        holoMaterial(Index,Material)
+        holoScale(Index,Scale)
+        holoColor(Index,Color)
+        holoPos(Index,Pos)
+        holoAng(Index,Ang)
+        holoDisableShading(Index,Shading)
+        if(Add == 1){
+            Holos:pushNumber(Index)
+        }
+    }
+    
+    hlx(1,entity(),"cube","",vec(1),vec(255,0,0),entity():toWorld(vec(0,0,10)),ang(0),1,1)
+    hlx(2,entity(),"cube","",vec(1),vec(0,255,0),entity():toWorld(vec(0,0,25)),ang(0),1,0)
+    hlx(3,entity(),"cube","",vec(1),vec(0,0,255),entity():toWorld(vec(0,0,40)),ang(0),1,1)
+    
+    hlx(4,entity(),"cube","",vec(1),vec(255,0,0),entity():toWorld(vec(10,0,0)),ang(0),1,1)
+    hlx(5,entity(),"cube","",vec(1),vec(0,255,0),entity():toWorld(vec(25,0,0)),ang(0),1,0)
+    hlx(6,entity(),"cube","",vec(1),vec(0,0,255),entity():toWorld(vec(40,0,0)),ang(0),1,1)
+}
+
+interval(60)
+
+foreach(K,V:number = Holos){
+    T = T + 1
+    C = cos(T*5)*50
+
+    holoColor(V,vec(0,0,C+150))
+}
