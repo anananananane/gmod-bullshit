@@ -1,0 +1,39 @@
+@name train plane
+@inputs 
+@outputs 
+@persist [Target Prop]:entity
+@trigger 
+
+#[
+    stole the idea from my friend runic
+    
+]#
+
+if(first()){
+    runOnTick(1)
+    runOnChat(1)
+}
+
+if(chatClk(owner())){
+    local LS = owner():lastSaid()
+    if(LS:sub(1,7) == "!train "){
+        Target = findPlayerByName(LS:sub(8))
+        Prop = propSpawn("models/props_trainstation/train001.mdl",Target:pos() + vec(0,500,100),ang(0,0,0),0)
+        Prop:soundPlay(1,0,"ambient/alarms/train_horn2.wav")
+        Prop:applyForce(Prop:right() * Prop:mass() * 100000)   
+        
+        timer("remove",500)
+
+    }elseif(LS:sub(1,7) == "!plane "){
+        Target = findPlayerByName(LS:sub(8))
+        Prop = propSpawn("models/xqm/jetbody3_s5.mdl",Target:pos() + vec(0,500,100),ang(0,0,0),0)
+        Prop:soundPlay(1,0,"ambient/alarms/train_horn2.wav")
+        Prop:applyForce(Prop:right() * Prop:mass() * 100000)   
+        
+        timer("remove",500)
+    }
+
+}
+if(clk("remove")){
+    Prop:propDelete()
+}
