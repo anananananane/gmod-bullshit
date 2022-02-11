@@ -1,8 +1,7 @@
 @name rOwOmba(knife)
 @persist [WalkRandomLookVec RandomLookVec]:vector
 @persist [Base Knife]:entity DesiredAngle:angle Sounds:array
-@persist [Go MoveSpeed Normal BatShitCrazy UltraDie HitTimer Timer DT]:number
-@persist SavedTime
+@persist [Go MoveSpeed Normal BatShitCrazy UltraDie HitTimer Timer SavedTime DT]:number
 @model models/props_phx/games/chess/black_dama.mdl
 
 Time = systime()
@@ -14,10 +13,10 @@ if(first()){
     Base = entity()
     Base:propFreeze(0)
     Base:setMass(50000)
-
+    
     rangerFilter(Base)
     propSpawnUndo(0)
-
+    
     Go = 1
     MoveSpeed = 1
     Normal = 1
@@ -26,18 +25,32 @@ if(first()){
     #ifdef noCollideAll(entity,number)
         noCollideAll(entity(),0)
     #endif
-
-    function void roomba(Dir:vector,Speed:number){
+    
+    function entity findPlayerAround(Pos:vector, Radius:number) {
+        Radius = Radius * Radius
+        
+        foreach (K, V:entity = players()) {
+            local Dist = Pos:distance2(V:pos())
+            
+            if (Dist < Radius & V:isAlive()) {
+                return V
+            }
+        }
+        
+        return noentity()
+    }
+    
+    function void entity:roomba(Dir:vector,Speed:number){
         if(Go){
-            local Ranger = rangerOffset(100,Base:massCenter(),vec(0,0,-1))
-            local Pos = Ranger:position()-Base:pos()+(Base:forward()*Go*Speed*5)+vec(0,0,5)
-            Base:applyForce((Pos*10-Base:vel())*Base:mass())
-        
-            local DesiredAngle = ang(0,-angnorm(bearing(Base:pos(),ang(0),Dir)),0)
-        
-            local LevAngle = angnorm(-Base:angles()+DesiredAngle)*15-Base:angVel()*2
-            local Leverage = Base:inertia():length()
-            Base:applyAngForce(LevAngle*Leverage)
+            local Ranger = rangerOffset(100,This:massCenter(),vec(0,0,-1))
+            local Pos = Ranger:position()-This:pos()+(This:forward()*Go*Speed*5)+vec(0,0,5)
+            This:applyForce((Pos*10-This:vel())*This:mass())
+            
+            local DesiredAngle = ang(0,-angnorm(bearing(This:pos(),ang(0),Dir)),0)
+            
+            local LevAngle = angnorm(-This:angles()+DesiredAngle)*15-This:angVel()*2
+            local Leverage = This:inertia():length()
+            This:applyAngForce(LevAngle*Leverage)
         }
     }
     
@@ -55,15 +68,15 @@ if(first()){
             Knife:parentTo(holoEntity(1))
         }
         
-        local KR = rangerOffset(80,Knife:massCenter(),Knife:forward())
-        local KREnt = KR:entity()
-        if(KREnt:type() == owner():type()){
-            boomCustom(3,KREnt:pos(),inf(),100)
+        local Victim = findPlayerAround(Knife:pos(),100)
+        if(changed(Victim:isValid()) & Victim:isPlayer()){
+            boomCustom(3,Victim:pos(),inf(),100)
+            Base:streamStart(1,"https://cdn.discordapp.com/attachments/940090055106629642/941548343555944498/roombaroadkill.mp3")
         }
     }
-
+    
     timer("randomturn",1)
-
+    
     Base:soundPlay("Hum",0,"npc/scanner/combat_scan_loop2.wav")
     Base:setMaterial("models/shiny")
     Base:setColor(vec(0))
@@ -90,24 +103,24 @@ if(chatClk(owner())){
 elseif(clkName() == "randomturn"){
     timer("randomturn",randint(1000,8000))
     Base:soundPlay("Turn_sound",0,"ambient/levels/prison/radio_random" + randint(1,15) + ".wav")
-
+    
     local Ang = randint(360)
     local Dir = vec(cos(Ang),sin(Ang),0)
-
+    
     RandomLookVec = Base:pos() + Dir * 1000
 }
 elseif(tickClk()){
-    roomba(RandomLookVec,MoveSpeed)
-
+    Base:roomba(RandomLookVec,MoveSpeed)
+    
     local FRanger = rangerOffset(50,Base:massCenter(),Base:forward())
     local REnt = FRanger:entity()
     if(FRanger:hitWorld()){
         local Time = curtime()
-
+        
         if(Time > HitTimer){
             RandomLookVec = Base:pos() + FRanger:hitNormal() * 1000
             HitTimer = Time + 2
-
+            
             stoptimer("randomturn")
             timer("randomturn",randint(1000,5000))
         }
