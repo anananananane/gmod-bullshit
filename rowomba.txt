@@ -1,7 +1,8 @@
-@name rOwOmba(knife)
+@name rOwOmba
+@persist [Go MoveSpeed Normal BatShitCrazy UltraDie HitTimer Timer SavedTime DT]
 @persist [WalkRandomLookVec RandomLookVec]:vector
-@persist [Base Knife]:entity DesiredAngle:angle Sounds:array
-@persist [Go MoveSpeed Normal BatShitCrazy UltraDie HitTimer Timer SavedTime DT]:number
+@persist [DesiredAngle]:angle
+@persist [Base Knife]:entity 
 @model models/props_phx/games/chess/black_dama.mdl
 
 Time = systime()
@@ -29,14 +30,13 @@ if(first()){
     function entity findPlayerAround(Pos:vector, Radius:number) {
         Radius = Radius * Radius
         
-        foreach (K, V:entity = players()) {
+        foreach(K,V:entity = players()){
             local Dist = Pos:distance2(V:pos())
             
-            if (Dist < Radius & V:isAlive()) {
+            if(Dist < Radius & V:isAlive()){
                 return V
             }
         }
-        
         return noentity()
     }
     
@@ -63,7 +63,6 @@ if(first()){
             holoPos(1,Pos)
             holoAng(1,Ang)
             
-            Knife = propSpawn("models/hunter/plates/plate025.mdl",holoEntity(1):toWorld(vec(0)),ang(0,90,0),1)
             Knife:setAlpha(0)
             Knife:parentTo(holoEntity(1))
         }
@@ -102,7 +101,7 @@ if(chatClk(owner())){
 }
 elseif(clkName() == "randomturn"){
     timer("randomturn",randint(1000,8000))
-    Base:soundPlay("Turn_sound",0,"ambient/levels/prison/radio_random" + randint(1,15) + ".wav")
+        Base:soundPlay("Turn_sound",0,"ambient/levels/prison/radio_random" + randint(1,15) + ".wav")
     
     local Ang = randint(360)
     local Dir = vec(cos(Ang),sin(Ang),0)
