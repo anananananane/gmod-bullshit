@@ -1,0 +1,103 @@
+@name amraams
+@inputs 
+@outputs 
+@persist [Amraam]:entity Vec:vector Bomb:array FireCount:table
+@persist Stage SavedTime Go
+
+Time = systime()
+MS = round(Time,1)
+
+if(first()){
+    runOnTick(1)
+    
+    propSpawnUndo(0)
+
+    function entity findPlayerAround(Pos:vector, Radius:number) {
+        Radius = Radius * Radius
+
+        foreach (K, V:entity = players()) {
+            local Dist = Pos:distance2(V:pos())
+
+            if (Dist < Radius & V:isAlive()) {
+                return V
+            }
+        }
+
+        return noentity()
+    }
+    
+    function number shortestAngleBetween(S, E) {
+        return ((((E - S) % 360) + 540) % 360) - 180
+    }
+
+    function angle shortestAnglesBetween(S:angle, E:angle) {
+        return ang(
+            shortestAngleBetween(S:pitch(), E:pitch()),
+            shortestAngleBetween(S:yaw(), E:yaw()),
+            shortestAngleBetween(S:roll(), E:roll())
+        )
+    }
+
+    function makeObjectLookAt(Ent:entity, Target:entity) {
+        local CurrentAng = Ent:angles()
+        local DesiredAng = (Target:pos() - Ent:pos()):toAngle()
+
+        local Force = shortestAnglesBetween(CurrentAng, DesiredAng) * 1500
+
+        Force -= Ent:angVel() * 150
+
+        Ent:applyAngForce( Force * Ent:mass() * tickInterval() )
+    }
+}
+
+Key = owner():keyPressed("R")
+if(changed(Key) & Key & !Amraam:isValid()){
+    Amraam = propSpawn("models/props_phx/amraam.mdl",entity():toWorld(vec(0,0,90)),entity():toWorld(ang(-90,0,0)),0)
+    Amraam:propGravity(0)
+    Amraam:propDrag(0)
+    Amraam:setMass(50000)
+    Amraam:setTrails(30,0,5,"trails/smoke",vec(165),25)
+    Bomb:pushEntity(Amraam)
+    
+    Stage = 1
+    SavedTime = Time
+}
+
+foreach(K,V:entity = Bomb){
+    if(V:isValid()){
+        local DT = Time - SavedTime 
+        
+        switch(Stage){ 
+            case 1,
+                local SegmentLength = 1 
+                
+             if(DT < SegmentLength){
+                    V:applyForce(V:forward()*V:mass()*5)
+                }else{
+                    Stage = 2
+                    SavedTime = Time
+                }
+            break
+        
+            case 2,
+                Go = 1
+                SavedTime = Time      
+            break
+        
+        }
+        if(Go){
+            local Found = owner() # findPlayerAround(V:pos(),10000)
+            if(Found:isValid()){
+                V:applyForce(V:forward()*V:mass()*50)
+                makeObjectLookAt(V,Found)
+                
+                if(round(toUnit("km/h",V:velL():length())) >= 200){
+                    V:propBreak()
+                }
+                if(V:pos():distance(Found:pos()) < 100){
+                    V:propBreak()
+                }
+            }
+        }
+    }
+}
