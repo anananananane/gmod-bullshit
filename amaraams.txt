@@ -1,0 +1,87 @@
+@name Amaraams
+@persist [Amraam Owner Chip]:entity 
+@persist [SLimit ChangeFire]
+@persist [TargetPos]:vector 
+@persist [Projects]:array 
+@persist [Keys]:table
+
+if(first()){
+    SLimit = 0.15
+    Projects = array()
+    
+    Owner = owner()
+    Chip = entity()
+    
+    propSpawnUndo(0)
+    #ifdef propSpawnASync(number)
+        propSpawnASync(1)
+    #endif
+    
+    runOnTick(1)
+    runOnKeys(Owner,1)
+}
+
+if(keyClk(Owner)){
+    Keys["ChangeTargeting",number] = Owner:keyPressed("R")
+    if(changed(Keys["ChangeTargeting",number]) & Keys["ChangeTargeting",number]){
+        ChangeFire++
+        if(ChangeFire > 1){
+            ChangeFire = 0
+        }
+    }
+    
+    Keys["FireInput",number] = Owner:keyPressed("E")
+    if(changed(Keys["FireInput",number]) & Keys["FireInput",number] & !Amraam:isValid()){
+        Amraam = propSpawn("models/props_phx/amraam.mdl",Chip:toWorld(vec(0,0,100)),Chip:toWorld(ang(-90,0,0)),0)
+        Amraam:propDrag(0)
+        Amraam:propDraw(0)
+        Amraam:propGravity(0)
+        Amraam:setTrails(30,0,5,"trails/smoke",vec(165),255)
+        Amraam:setMass(50000)
+        Amraam:propSetVelocity(Chip:up()*1250)
+        Projects:pushEntity(Amraam)
+    
+        holoCreate(1)
+        holoParent(1,Amraam)
+        holoModel(1,"models/props_phx/amraam.mdl")
+        holoPos(1,Amraam:toWorld(vec(0)))
+    }
+}
+elseif(tickClk()){    
+    if(ChangeFire == 1){
+        findByClass(Owner:type())
+        local Target = findClosest(Chip:pos())
+        if(Target:isValid()){
+            TargetPos = Target:pos()
+        }
+        
+        if(changed(Target)){
+            print("Now targeting "+Target:name())
+        }
+                   
+    }else{
+        TargetPos = Owner:eyeTraceCursor():position()
+    }
+
+    foreach(K,V:entity = Projects){  
+        if(V:isValid()){
+            if(V:pos():distance(TargetPos) > 1000){
+                if(V:pos():distance(Chip:pos()) < 2000){
+                    ZForce = V:pos():z()-TargetPos:z() * 125
+                }
+            }
+            V:applyForce(((-(V:pos() - TargetPos):normalized()) * V:mass()*55) - ((V:vel() * SLimit) * (V:mass() * SLimit)) + vec(0,0,ZForce))
+            rangerFilter(V)
+            rangerFilter(Chip)
+            if(V:pos():distance(Chip:pos()) > 500){
+                if(rangerOffset(150,V:pos(),V:vel() * 1):hit()){
+                    V:propBreak()
+                }
+            }
+            holoAng(1,V:vel():toAngle())
+            }else{
+            holoDelete(1)
+            Projects:remove(1)
+        }
+    }
+}
