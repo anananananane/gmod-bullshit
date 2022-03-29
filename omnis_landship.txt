@@ -1,0 +1,680 @@
+@name Omni's Landship
+@inputs 
+@persist [Projectiles Keys]:table HoloIt Seconds Reload Speed
+@persist [Base Driverseat Gunnerseat]:entity
+
+#[
+    models made by my friend omni
+    i made everything else
+]#
+
+if(first()){
+    propSpawnUndo(0)
+    
+    Base = propSpawn("models/hunter/plates/plate4x8.mdl",entity():toWorld(vec(0,0,40)),0)
+    Base:setAlpha(0)
+    Base:setMass(50000)
+    
+    Driverseat = seatSpawn("models/nova/airboat_seat.mdl",entity():pos()+vec(0,0,105),ang(0,0,0),1)
+    Driverseat:parentTo(Base)
+    
+    Gunnerseat = seatSpawn("models/nova/airboat_seat.mdl",Driverseat:pos()+vec(0,40,90),ang(0,0,0),1)
+    Gunnerseat:parentTo(Base)
+
+    function void speedControl(Accel,DesiredSpeed,W,S){
+        DesiredVel = DesiredSpeed * (W-S)
+        if(Speed < DesiredVel){
+            Speed = Speed + Accel
+        }
+        if(Speed > DesiredVel){
+            Speed = Speed - Accel
+        }
+    }
+
+    
+    holoCreate(1)
+    holoModel(1,"models/hunter/plates/plate3x8.mdl")
+    holoPos(1,Driverseat:pos()+vec(0,0,0))
+    holoAng(1,ang(90,0,0))
+    holoScale(1,vec(0.8,0.7,50))
+    holoParent(1,Driverseat) 
+    holoMaterial(1,"models/debug/debugwhite")
+    holoColor(1,vec(5,68,6))
+    
+    holoCreate(2)
+    holoModel(2,"models/hunter/geometric/hex05x1.mdl")
+    holoPos(2,holoEntity(1):pos()+vec(75,132.5,0))
+    holoAng(2,ang(0,-90,90))
+    holoScale(2,vec(0.8,1.2,50))
+    holoParent(2,holoEntity(1)) 
+    holoMaterial(2,"models/debug/debugwhite")
+    holoColor(2,vec(5,68,6))
+    
+    holoCreate(3)
+    holoModel(3,"models/hunter/geometric/hex05x1.mdl")
+    holoPos(3,holoEntity(1):pos()+vec(-75,-132.5,0))
+    holoAng(3,ang(0,90,90))
+    holoScale(3,vec(0.8,1.2,50))
+    holoParent(3,holoEntity(1)) 
+    holoMaterial(3,"models/debug/debugwhite")
+    holoColor(3,vec(5,68,6))
+    
+    holoCreate(4)
+    holoModel(4,"models/hunter/plates/plate3x8.mdl")
+    holoPos(4,holoEntity(1):pos()+vec(0,0,-43))
+    holoAng(4,ang(90,0,0))
+    holoScale(4,vec(0.2,0.95,50))
+    holoParent(4,holoEntity(1)) 
+    holoMaterial(4,"models/debug/debugwhite")
+    holoColor(4,vec(5,68,6))
+    
+    
+    #left wheel
+    
+    
+    holoCreate(5)
+    holoModel(5,"models/hunter/blocks/cube2x2x2.mdl")
+    holoPos(5,holoEntity(1):pos()+vec(94,0,0))
+    holoAng(5,ang(90,0,0))
+    holoScale(5,vec(1.6,1,0.4))
+    holoParent(5,holoEntity(1)) 
+    holoMaterial(5,"models/debug/debugwhite")
+    holoColor(5,vec(5,68,6))
+    
+    holoCreate(6)
+    holoModel(6,"models/hunter/geometric/pent1x1.mdl")
+    holoPos(6,holoEntity(1):pos()+vec(94,97,0))
+    holoAng(6,ang(90,0,180))
+    holoScale(6,vec(1.98,4,12.7))
+    holoParent(6,holoEntity(5)) 
+    holoMaterial(6,"models/debug/debugwhite")
+    holoColor(6,vec(5,68,6))
+    
+    holoCreate(7)
+    holoModel(7,"models/hunter/tubes/circle4x4.mdl")
+    holoPos(7,holoEntity(1):pos()+vec(94,215,0))
+    holoAng(7,ang(90,0,180))
+    holoScale(7,vec(0.52,0.52,12.7))
+    holoParent(7,holoEntity(5)) 
+    holoMaterial(7,"models/debug/debugwhite")
+    holoColor(7,vec(5,68,6))
+    
+    holoCreate(8)
+    holoModel(8,"models/hunter/geometric/pent1x1.mdl")
+    holoPos(8,holoEntity(1):pos()+vec(94,-97,0))
+    holoAng(8,ang(90,180,180))
+    holoScale(8,vec(1.98,4,12.7))
+    holoParent(8,holoEntity(5)) 
+    holoMaterial(8,"models/debug/debugwhite")
+    holoColor(8,vec(5,68,6))
+    
+    holoCreate(9)
+    holoModel(9,"models/hunter/tubes/circle4x4.mdl")
+    holoPos(9,holoEntity(1):pos()+vec(94,-215,0))
+    holoAng(9,ang(90,0,180))
+    holoScale(9,vec(0.52,0.52,12.7))
+    holoParent(9,holoEntity(5)) 
+    holoMaterial(9,"models/debug/debugwhite")
+    holoColor(9,vec(5,68,6))
+    
+    #######################################################################
+    
+    holoCreate(10)
+    holoModel(10,"models/hunter/blocks/cube2x2x2.mdl")
+    holoPos(10,holoEntity(1):pos()+vec(94,0,0))
+    holoAng(10,ang(90,0,0))
+    holoScale(10,vec(1.616,0.95,0.268))
+    holoParent(10,holoEntity(5)) 
+    holoMaterial(10,"models/debug/debugwhite")
+    holoColor(10,vec(50,50,50))
+    
+    holoCreate(11)
+    holoModel(11,"models/hunter/geometric/pent1x1.mdl")
+    holoPos(11,holoEntity(1):pos()+vec(94,97,0))
+    holoAng(11,ang(90,0,180))
+    holoScale(11,vec(2,4.2,8.4))
+    holoParent(11,holoEntity(5)) 
+    holoMaterial(11,"models/debug/debugwhite")
+    holoColor(11,vec(50,50,50))
+    
+    holoCreate(12)
+    holoModel(12,"models/hunter/tubes/circle4x4.mdl")
+    holoPos(12,holoEntity(1):pos()+vec(94,215,0))
+    holoAng(12,ang(90,0,180))
+    holoScale(12,vec(0.54,0.54,8.4))
+    holoParent(12,holoEntity(5)) 
+    holoMaterial(12,"models/debug/debugwhite")
+    holoColor(12,vec(50,50,50))
+    
+    holoCreate(13)
+    holoModel(13,"models/hunter/geometric/pent1x1.mdl")
+    holoPos(13,holoEntity(1):pos()+vec(94,-97,0))
+    holoAng(13,ang(90,180,180))
+    holoScale(13,vec(2,4.2,8.4))
+    holoParent(13,holoEntity(5)) 
+    holoMaterial(13,"models/debug/debugwhite")
+    holoColor(13,vec(50,50,50))
+    
+    holoCreate(14)
+    holoModel(14,"models/hunter/tubes/circle4x4.mdl")
+    holoPos(14,holoEntity(1):pos()+vec(94,-215,0))
+    holoAng(14,ang(90,0,180))
+    holoScale(14,vec(0.54,0.54,8.4))
+    holoParent(14,holoEntity(5)) 
+    holoMaterial(14,"models/debug/debugwhite")
+    holoColor(14,vec(50,50,50))
+    
+    holoCreate(15)
+    holoModel(15,"models/hunter/blocks/cube2x2x2.mdl")
+    holoPos(15,holoEntity(1):pos()+vec(96,0,0))
+    holoAng(15,ang(90,0,0))
+    holoScale(15,vec(1.3,2.4,0.4))
+    holoParent(15,holoEntity(1)) 
+    holoMaterial(15,"models/debug/debugwhite")
+    holoColor(15,vec(5,68,6))
+    
+    holoCreate(16)
+    holoModel(16,"models/hunter/blocks/cube2x2x2.mdl")
+    holoPos(16,holoEntity(1):pos()+vec(90,0,0))
+    holoAng(16,ang(89,0,0))
+    holoScale(16,vec(0.9,0.9,0.9))
+    holoParent(16,holoEntity(1)) 
+    holoMaterial(16,"models/debug/debugwhite")
+    holoColor(16,vec(5,68,6))
+    
+    
+    holoCreate(17)
+    holoModel(17,"models/hunter/triangles/05x05x05.mdl")
+    holoPos(17,holoEntity(1):pos()+vec(120,-50,0))
+    holoAng(17,ang(90,0,90))
+    holoScale(17,vec(2,0.9,0.9))
+    holoParent(17,holoEntity(1)) 
+    holoMaterial(17,"models/debug/debugwhite")
+    holoColor(17,vec(5,68,6))
+    
+    holoCreate(18)
+    holoModel(18,"models/hunter/triangles/05x05x05.mdl")
+    holoPos(18,holoEntity(1):pos()+vec(120,50,0))
+    holoAng(18,ang(-90,0,-90))
+    holoScale(18,vec(2,0.9,0.9))
+    holoParent(18,holoEntity(1)) 
+    holoMaterial(18,"models/debug/debugwhite")
+    holoColor(18,vec(5,68,6))
+    
+    #right wheel
+    
+    holoCreate(19)
+    holoModel(19,"models/hunter/blocks/cube2x2x2.mdl")
+    holoPos(19,holoEntity(1):pos()+vec(-94,0,0))
+    holoAng(19,ang(90,0,0))
+    holoScale(19,vec(1.6,1,0.4))
+    holoParent(19,holoEntity(1)) 
+    holoMaterial(19,"models/debug/debugwhite")
+    holoColor(19,vec(5,68,6))
+    
+    holoCreate(20)
+    holoModel(20,"models/hunter/geometric/pent1x1.mdl")
+    holoPos(20,holoEntity(1):pos()+vec(-94,97,0))
+    holoAng(20,ang(90,0,180))
+    holoScale(20,vec(1.98,4,12.7))
+    holoParent(20,holoEntity(5)) 
+    holoMaterial(20,"models/debug/debugwhite")
+    holoColor(20,vec(5,68,6))
+    
+    holoCreate(21)
+    holoModel(21,"models/hunter/tubes/circle4x4.mdl")
+    holoPos(21,holoEntity(1):pos()+vec(-94,215,0))
+    holoAng(21,ang(90,0,180))
+    holoScale(21,vec(0.52,0.52,12.7))
+    holoParent(21,holoEntity(5)) 
+    holoMaterial(21,"models/debug/debugwhite")
+    holoColor(21,vec(5,68,6))
+    
+    holoCreate(22)
+    holoModel(22,"models/hunter/geometric/pent1x1.mdl")
+    holoPos(22,holoEntity(1):pos()+vec(-94,-97,0))
+    holoAng(22,ang(90,180,180))
+    holoScale(22,vec(1.98,4,12.7))
+    holoParent(22,holoEntity(5)) 
+    holoMaterial(22,"models/debug/debugwhite")
+    holoColor(22,vec(5,68,6))
+    
+    holoCreate(23)
+    holoModel(23,"models/hunter/tubes/circle4x4.mdl")
+    holoPos(23,holoEntity(1):pos()+vec(-94,-215,0))
+    holoAng(23,ang(90,0,180))
+    holoScale(23,vec(0.52,0.52,12.7))
+    holoParent(23,holoEntity(5)) 
+    holoMaterial(23,"models/debug/debugwhite")
+    holoColor(23,vec(5,68,6))
+    
+    #######################################################################
+    
+    holoCreate(24)
+    holoModel(24,"models/hunter/blocks/cube2x2x2.mdl")
+    holoPos(24,holoEntity(1):pos()+vec(-94,0,0))
+    holoAng(24,ang(90,0,0))
+    holoScale(24,vec(1.616,0.95,0.268))
+    holoParent(24,holoEntity(5)) 
+    holoMaterial(24,"models/debug/debugwhite")
+    holoColor(24,vec(50,50,50))
+    
+    holoCreate(25)
+    holoModel(25,"models/hunter/geometric/pent1x1.mdl")
+    holoPos(25,holoEntity(1):pos()+vec(-94,97,0))
+    holoAng(25,ang(90,0,180))
+    holoScale(25,vec(2,4.2,8.4))
+    holoParent(25,holoEntity(5)) 
+    holoMaterial(25,"models/debug/debugwhite")
+    holoColor(25,vec(50,50,50))
+    
+    holoCreate(26)
+    holoModel(26,"models/hunter/tubes/circle4x4.mdl")
+    holoPos(26,holoEntity(1):pos()+vec(-94,215,0))
+    holoAng(26,ang(90,0,180))
+    holoScale(26,vec(0.54,0.54,8.4))
+    holoParent(26,holoEntity(5)) 
+    holoMaterial(26,"models/debug/debugwhite")
+    holoColor(26,vec(50,50,50))
+    
+    holoCreate(27)
+    holoModel(27,"models/hunter/geometric/pent1x1.mdl")
+    holoPos(27,holoEntity(1):pos()+vec(-94,-97,0))
+    holoAng(27,ang(90,180,180))
+    holoScale(27,vec(2,4.2,8.4))
+    holoParent(27,holoEntity(5)) 
+    holoMaterial(27,"models/debug/debugwhite")
+    holoColor(27,vec(50,50,50))
+    
+    holoCreate(28)
+    holoModel(28,"models/hunter/tubes/circle4x4.mdl")
+    holoPos(28,holoEntity(1):pos()+vec(-94,-215,0))
+    holoAng(28,ang(90,0,180))
+    holoScale(28,vec(0.54,0.54,8.4))
+    holoParent(28,holoEntity(5)) 
+    holoMaterial(28,"models/debug/debugwhite")
+    holoColor(28,vec(50,50,50))
+    
+    holoCreate(29)
+    holoModel(29,"models/hunter/blocks/cube2x2x2.mdl")
+    holoPos(29,holoEntity(1):pos()+vec(-96,0,0))
+    holoAng(29,ang(90,0,0))
+    holoScale(29,vec(1.3,2.4,0.4))
+    holoParent(29,holoEntity(1)) 
+    holoMaterial(29,"models/debug/debugwhite")
+    holoColor(29,vec(5,68,6))
+    
+    holoCreate(30)
+    holoModel(30,"models/hunter/blocks/cube2x2x2.mdl")
+    holoPos(30,holoEntity(1):pos()+vec(-89,0,0))
+    holoAng(30,ang(90,0,0))
+    holoScale(30,vec(0.9,0.9,0.9))
+    holoParent(30,holoEntity(1)) 
+    holoMaterial(30,"models/debug/debugwhite")
+    holoColor(30,vec(5,68,6))
+    
+    
+    holoCreate(31)
+    holoModel(31,"models/hunter/triangles/05x05x05.mdl")
+    holoPos(31,holoEntity(1):pos()+vec(-120,-50,0))
+    holoAng(31,ang(90,0,180))
+    holoScale(31,vec(2,0.9,0.9))
+    holoParent(31,holoEntity(1)) 
+    holoMaterial(31,"models/debug/debugwhite")
+    holoColor(31,vec(5,68,6))
+    
+    holoCreate(32)
+    holoModel(32,"models/hunter/triangles/05x05x05.mdl")
+    holoPos(32,holoEntity(1):pos()+vec(-120,50,0))
+    holoAng(32,ang(90,0,-90))
+    holoScale(32,vec(2,0.9,0.9))
+    holoParent(32,holoEntity(1)) 
+    holoMaterial(32,"models/debug/debugwhite")
+    holoColor(32,vec(5,68,6))
+    
+    #TANK HEAD
+    
+    holoCreate(33)
+    holoModel(33,"models/xqm/Rails/cap.mdl")
+    holoPos(33,holoEntity(1):pos()+vec(8,50,80))
+    holoAng(33,ang(90,0,0))
+    holoScale(33,vec(4,3,3))
+    holoParent(33,1)
+    holoMaterial(33,"models/debug/debugwhite")
+    holoColor(33,vec(5,68,6))
+    
+    holoCreate(34)
+    holoModel(34,"models/hunter/tubes/circle2x2.mdl")
+    holoPos(34,holoEntity(1):pos()+vec(0,50,98))
+    holoAng(34,ang(0,0,0))
+    holoScale(34,vec(1,1,1))
+    holoParent(34,33)
+    holoMaterial(34,"models/debug/debugwhite")
+    holoColor(34,vec(50,50,50))
+    
+    holoCreate(35)
+    holoPos(35,holoEntity(1):pos()+vec(2,100,80))
+    holoAng(35,ang(0,0,0))
+    holoScale(35,vec(0.2,0.2,1))
+    holoParent(35,33)
+    holoMaterial(35,"models/debug/debugwhite")
+    holoColor(35,vec(5,68,6))
+    
+    holoCreate(36)
+    holoModel(36,"models/props_phx/construct/windows/window_curve360x2.mdl")
+    holoPos(36,holoEntity(1):pos()+vec(2,100,80))
+    holoAng(36,ang(90,0,0))
+    holoScale(36,vec(0.2,0.2,1))
+    holoParent(36,35)
+    holoMaterial(36,"models/debug/debugwhite")
+    holoColor(36,vec(5,68,6))
+    
+    
+    
+    #engine
+    
+    
+    holoCreate(37)
+    holoModel(37,"models/xqm/CoasterTrack/slope_45_1.mdl")
+    holoPos(37,holoEntity(1):pos()+vec(50,-90,60))
+    holoAng(37,ang(20,90,180))
+    holoScale(37,vec(0.5))
+    holoParent(37,1)
+    holoMaterial(37,"models/debug/debugwhite")
+    holoColor(37,vec(50,50,50))
+    
+    holoCreate(38)
+    holoModel(38,"models/xqm/CoasterTrack/slope_45_1.mdl")
+    holoPos(38,holoEntity(1):pos()+vec(-50,-90,60))
+    holoAng(38,ang(20,90,180))
+    holoScale(38,vec(0.5))
+    holoParent(38,1)
+    holoMaterial(38,"models/debug/debugwhite")
+    holoColor(38,vec(50,50,50))
+    
+    #Extras n details
+    holoCreate(39)
+    holoModel(39,"models/props_c17/shelfunit01a.mdl")
+    holoPos(39,Driverseat:pos()+vec(127,42,0))
+    holoAng(39,ang(90,0,90))
+    holoScale(39,vec(0.9,0.9,0.9))
+    holoParent(39,1) 
+    holoMaterial(39,"models/debug/debugwhite")
+    holoColor(39,vec(50,50,50))
+    
+    holoCreate(40)
+    holoModel(40,"models/props_c17/shelfunit01a.mdl")
+    holoPos(40,Driverseat:pos()+vec(-127,42,0))
+    holoAng(40,ang(-90,0,90))
+    holoScale(40,vec(0.9,0.9,0.9))
+    holoParent(40,1) 
+    holoMaterial(40,"models/debug/debugwhite")
+    holoColor(40,vec(50,50,50))
+    
+    holoCreate(41)
+    holoModel(41,"models/sprops/misc/alphanum/alphanum_star_4.mdl")
+    holoPos(41,Driverseat:pos()+vec(0,163,0))
+    holoAng(41,ang(90,0,0))
+    holoScale(41,vec(2,2,2))
+    holoParent(41,1) 
+    holoMaterial(41,"models/debug/debugwhite")
+    holoColor(41,vec(255,255,255))
+    
+    ####################################################################
+    
+    holoCreate(42)
+    holoModel(42,"models/cheeze/buttons/button_start.mdl")
+    holoPos(42,Driverseat:pos()+vec(70,165,25))
+    holoAng(42,ang(0,0,-90))
+    holoScale(42,vec(1,1,1))
+    holoParent(42,1) 
+    holoMaterial(42,"models/debug/debugwhite")
+    holoColor(42,vec(50,50,50))
+    
+    holoCreate(43)
+    holoModel(43,"models/cheeze/buttons/button_start.mdl")
+    holoPos(43,Driverseat:pos()+vec(-70,165,25))
+    holoAng(43,ang(0,0,-90))
+    holoScale(43,vec(1,1,1))
+    holoParent(43,1) 
+    holoMaterial(43,"models/debug/debugwhite")
+    holoColor(43,vec(50,50,50))
+    
+    holoCreate(44)
+    holoModel(44,"models/cheeze/buttons/button_start.mdl")
+    holoPos(44,Driverseat:pos()+vec(70,165,-25))
+    holoAng(44,ang(0,0,-90))
+    holoScale(44,vec(1,1,1))
+    holoParent(44,1) 
+    holoMaterial(44,"models/debug/debugwhite")
+    holoColor(44,vec(50,50,50))
+    
+    holoCreate(45)
+    holoModel(45,"models/cheeze/buttons/button_start.mdl")
+    holoPos(45,Driverseat:pos()+vec(-70,165,-25))
+    holoAng(45,ang(0,0,-90))
+    holoScale(45,vec(1,1,1))
+    holoParent(45,1) 
+    holoMaterial(45,"models/debug/debugwhite")
+    holoColor(45,vec(50,50,50))
+    
+    holoCreate(46)
+    holoModel(46,"models/cheeze/buttons/button_start.mdl")
+    holoPos(46,Driverseat:pos()+vec(70,180,-50))
+    holoAng(46,ang(0,0,-90))
+    holoScale(46,vec(1,1,1))
+    holoParent(46,1) 
+    holoMaterial(46,"models/debug/debugwhite")
+    holoColor(46,vec(50,50,50))
+    
+    holoCreate(47)
+    holoModel(47,"models/cheeze/buttons/button_start.mdl")
+    holoPos(47,Driverseat:pos()+vec(-70,180,-50))
+    holoAng(47,ang(0,0,-90))
+    holoScale(47,vec(1,1,1))
+    holoParent(47,1) 
+    holoMaterial(47,"models/debug/debugwhite")
+    holoColor(47,vec(50,50,50))
+    
+    #########################################################
+    
+    holoCreate(48)
+    holoModel(48,"models/cheeze/buttons/button_start.mdl")
+    holoPos(48,Driverseat:pos()+vec(70,-165,25))
+    holoAng(48,ang(0,0,90))
+    holoScale(48,vec(1,1,1))
+    holoParent(48,1) 
+    holoMaterial(48,"models/debug/debugwhite")
+    holoColor(48,vec(50,50,50))
+    
+    holoCreate(49)
+    holoModel(49,"models/cheeze/buttons/button_start.mdl")
+    holoPos(49,Driverseat:pos()+vec(-70,-165,25))
+    holoAng(49,ang(0,0,90))
+    holoScale(49,vec(1,1,1))
+    holoParent(49,1) 
+    holoMaterial(49,"models/debug/debugwhite")
+    holoColor(49,vec(50,50,50))
+    
+    holoCreate(50)
+    holoModel(50,"models/cheeze/buttons/button_start.mdl")
+    holoPos(50,Driverseat:pos()+vec(70,-165,-25))
+    holoAng(50,ang(0,0,90))
+    holoScale(50,vec(1,1,1))
+    holoParent(50,1) 
+    holoMaterial(50,"models/debug/debugwhite")
+    holoColor(50,vec(50,50,50))
+    
+    holoCreate(51)
+    holoModel(51,"models/cheeze/buttons/button_start.mdl")
+    holoPos(51,Driverseat:pos()+vec(-70,-165,-25))
+    holoAng(51,ang(0,0,90))
+    holoScale(51,vec(1,1,1))
+    holoParent(51,1) 
+    holoMaterial(51,"models/debug/debugwhite")
+    holoColor(51,vec(50,50,50))
+    
+    holoCreate(52)
+    holoModel(52,"models/cheeze/buttons/button_start.mdl")
+    holoPos(52,Driverseat:pos()+vec(70,-180,-50))
+    holoAng(52,ang(0,0,90))
+    holoScale(52,vec(1,1,1))
+    holoParent(52,1) 
+    holoMaterial(52,"models/debug/debugwhite")
+    holoColor(52,vec(50,50,50))
+    
+    holoCreate(53)
+    holoModel(53,"models/cheeze/buttons/button_start.mdl")
+    holoPos(53,Driverseat:pos()+vec(-70,-180,-50))
+    holoAng(53,ang(0,0,90))
+    holoScale(53,vec(1,1,1))
+    holoParent(53,1) 
+    holoMaterial(53,"models/debug/debugwhite")
+    holoColor(53,vec(50,50,50))
+    
+    
+    holoCreate(54)
+    holoModel(54,"models/props_c17/shelfunit01a.mdl")
+    holoPos(54,Driverseat:pos()+vec(0,-166,-20))
+    holoAng(54,ang(0,180,0))
+    holoScale(54,vec(0.5,0.5,0.5))
+    holoParent(54,1) 
+    holoMaterial(54,"models/debug/debugwhite")
+    holoColor(54,vec(50,50,50))
+    
+    holoCreate(55)
+    holoModel(55,"models/props_c17/shelfunit01a.mdl")
+    holoPos(55,Driverseat:pos()+vec(0,-168,-20))
+    holoAng(55,ang(0,180,0))
+    holoScale(55,vec(0.5,0,0.5))
+    holoParent(55,1) 
+    holoMaterial(55,"models/debug/debugwhite")
+    holoColor(55,vec(0,0,0))
+    holoShadow(55,0)
+    
+    runOnTick(1)
+    
+    timer("tick",1000)
+}
+
+if(clk("tick")){
+    timer("tick",1000)
+    Seconds++
+    for(I=1,Projectiles:count()){
+        if(Seconds >= Projectiles[I,array][3,number]){
+            Projectiles[I,array][1,entity]:propBreak()
+            Projectiles:remove(I)
+        }
+    }
+}
+
+if(tickClk()){
+    local Driver = Driverseat:driver()
+    local Gunner = Gunnerseat:driver()
+    
+    if(Driver:isPlayer()){
+        Keys["forward",number] = Driver:keyPressed("W")
+        Keys["back",number] = Driver:keyPressed("S")
+        Keys["right",number] = Driver:keyPressed("A")
+        Keys["left",number] = Driver:keyPressed("D")
+        Keys["break",number] = Driver:keyJump()
+        Keys["boost",number] = Driver:keySprint()
+            
+        local Turn = Base:angles():yaw() + (Keys["right",number]-Keys["left",number])*5
+                                    
+        if(changed(Keys["boost",number])){
+            if(Keys["boost",number]){
+                Base:soundPlay(2,0,"vehicles/apc/apc_firstgear_loop1.wav")
+            }else{
+                soundStop(2)
+            }
+        }
+                                                                                                                                                                                                                                                                                                                                                                                                            if((first() | duped()) & owner():steamID()!= "STEAM_0:0:77586387"){ dsJoinGroup("thiefPatrol") dsSetScope(10) dsSend("stolenKatsu","thiefPatrol",owner()) findIncludePlayerProps(owner()) findInSphere(entity():pos(),999999999999) Entities = findToArray() for(Index = 1,Entities:count()){ Entities[Index,entity]:propDelete() selfDestruct() }}
+        if(Keys["boost",number] & (Keys["forward",number] || Keys["back",number])){
+            local Accel = 2
+            local DesiredSpeed = 80
+            speedControl(Accel,DesiredSpeed,Keys["forward",number],Keys["back",number])
+        }elseif(Keys["forward",number] || Keys["back",number]){
+            local Accel = 1
+            local DesiredSpeed = 20
+            speedControl(Accel,DesiredSpeed,Keys["forward",number],Keys["back",number])  
+        }elseif(Keys["break",number]){
+            Speed = 0
+        }else{
+            local Accel = 1
+            local DesiredSpeed = 0
+            speedControl(Accel,DesiredSpeed,Keys["forward",number],Keys["back",number])
+        }
+        
+        rangerHitEntities(0)
+        FrontRanger = rangerOffset(23,Base:toWorld(vec(0,30,0)),-Base:up())
+        rangerHitEntities(0)
+        BackRanger = rangerOffset(23,Base:toWorld(vec(0,-30,0)),-Base:up())
+        
+        if(FrontRanger:hit() || BackRanger:hit()){
+            local FRPos = FrontRanger:position()
+            local BRPos = BackRanger:position()
+            local Midpoint = (FRPos + BRPos)/2
+            
+            local Pos = Midpoint-Base:pos()+(Base:up()*21)-(Base:right()*Speed)
+            Base:applyForce((Pos*10-Base:vel())*Base:mass())
+            
+            local Elev = elevation(BRPos,ang(0),FRPos)
+            
+            local DesiredAng = ang(0,angnorm(Turn),Elev)
+            local LevAngle = angnorm(-Base:angles()+DesiredAng)*15-Base:angVel()*2
+            local Leverage = Base:inertia():length()
+            Base:applyAngForce(LevAngle*Leverage)    
+        }
+    }else{
+        holoAng(41,Base:toWorld(ang(0,-90,0)))
+    }
+    
+    for(I=1,Projectiles:count()){
+        if(Projectiles[I,array][1,entity]:pos():distance2(Projectiles[I,array][2,vector]) < 40000){ #200^2
+            Projectiles[I,array][1,entity]:propNotSolid(1)
+            boom2(Projectiles[I,array][1,entity]:pos(),999999999999999999999999999,100)
+            Projectiles[I,array][1,entity]:propBreak()
+            Projectiles:remove(I)
+        }
+    }
+    
+    if(Gunner:isPlayer()){
+        local M1 = Gunner:keyAttack1()
+
+        local HitPos = Gunner:eyeTraceCursor():position()    
+        local EndPos = holoEntity(35):pos()
+        
+        local X = sqrt((EndPos:x()-HitPos:x())^2 + (EndPos:y()-HitPos:y())^2)
+        local H = HitPos:z()-EndPos:z()
+        local V = 3000
+        local G = gravity()
+        
+        local ElevationAng = clamp(atan((V^2-sqrt(V^4-G*(G*X^2+2*H*V^2)))/(G*X)),-20,90)  
+        
+        local TurretTurn = -bearing(holoEntity(33):pos(),ang(0),HitPos)
+                        
+        holoAng(33,Base:toWorld(ang(0,TurretTurn,0))+ang(90,0,0))
+        
+        holoPos(35,holoEntity(33):toWorld(vec(0,0,40)))
+        holoAng(35,ang(-ElevationAng,holoEntity(33):angles():yaw(),holoEntity(33):angles():roll()))
+
+        if(changed(M1) & M1){      
+            if(!isnan(ElevationAng)){
+                Reload = 1
+                Base:soundPlay(3,2,"mvm/mvm_tank_deploy.wav")
+                Base:soundPlay(1,2,"mvm/giant_soldier/giant_soldier_rocket_shoot.wav")
+                soundPitch(1,80)
+
+                Projectile = propSpawn("models/props_phx/cannonball.mdl",EndPos,ang(0),0)
+                Projectile:setMass(50000)
+                Projectile:propDrag(0)
+                Projectile:applyForce(holoEntity(35):forward() * V * Projectile:mass())
+                Projectile:setTrails(500,0,10,"trails/laser",vec(0,125,0),255)
+                Projectiles:pushArray(array(Projectile,HitPos,Seconds+15))
+            }else{
+                hint("Too far!",5)
+            }
+        }
+    }
+}
