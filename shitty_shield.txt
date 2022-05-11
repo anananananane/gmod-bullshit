@@ -12,7 +12,7 @@ if(first()){
     runOnTick(1)
     runOnLast(1)
     
-    Owner = Owner
+    Owner = owner()
     Chip = entity()
     
     propSpawnUndo(0)
