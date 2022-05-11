@@ -1,7 +1,6 @@
 @name TextToSpeech
 
 if(first()){
-    runOnTick(1)
     runOnChat(1)
 }
 
